@@ -8,7 +8,7 @@ In this assignment, you will build a web application that scrapes various websit
 
 2. Clone the new repository to your computer.
 
-3. Inside your local Git repository, create a directory for the web scraping challenge. Use a folder name that corresponds to the challenge: `Missions_to_Mars`.
+3. Inside your local Git repository, create a directory for the web scraping challenge. Use a folder name that corresponds to the challenge: `Missions_to_Marsj `.
 
 4. Add your notebook files to this folder as well as your Flask app.
 
