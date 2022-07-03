@@ -8,7 +8,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 def scrape():
     executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
+    browser = Browser('chrome', **executable_path, headless=True)
+
+    mars_data = {}
 
     # # Enter whatever URL you like
     browser.visit("https://redplanetscience.com/")
@@ -17,7 +19,8 @@ def scrape():
     content = browser.html
     # Load the contents of the page, its source, into BeautifulSoup 
 
-    soup = BeautifulSoup(content)
+    soup = BeautifulSoup(content,features="lxml")
+    # print (soup.prettify)
 
     # Object is “results”, brackets make the object an empty list.
     # We will be storing our data here.
@@ -33,6 +36,7 @@ def scrape():
 
         results.append(news)
 
+    mars_data["news"] = results
     print(results)
 
     browser.visit("https://spaceimages-mars.com/")
@@ -42,11 +46,13 @@ def scrape():
     # Load the contents of the page, its source, into BeautifulSoup 
     # class, which analyzes the HTML as a nested data structure and allows to select
     # its elements by using various selectors.
-    soup = BeautifulSoup(content)
+    soup = BeautifulSoup(content,features="lxml")
     print(soup.prettify)
 
     imgtag = soup.find(attrs={'class':'headerimage fade-in'})
     featured_image_url = imgtag['src']
+
+    mars_data["space_img"] = featured_image_url
 
     #pulling table using pandas to scrap
     #then exporting to be used later in flask
@@ -56,11 +62,17 @@ def scrape():
     mars_facts.drop(index=mars_facts.index[0], axis=0,inplace=True)
     mars_facts = mars_facts.set_index("Data Type")
 
+    mars_data["facts_table"] = mars_facts.to_html()
+
     #connecting to the hemisphere page
     browser.visit("https://marshemispheres.com/")
     content = browser.html
 
-    soup = BeautifulSoup(content)
+    soup = BeautifulSoup(content,features="lxml")
+
+
+    # In[37]:
+
 
     #grabbing the headers text of images on home page that have links
     mars_hemispheres = []
@@ -90,3 +102,6 @@ def scrape():
         
         
     browser.quit()
+
+    mars_data["hemi_pics"] = hemis_imgs
+    return mars_data
