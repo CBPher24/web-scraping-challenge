@@ -3,7 +3,7 @@ import pandas as pd
 from splinter import Browser
 from bs4 import BeautifulSoup
 from webdriver_manager.chrome import ChromeDriverManager
-
+import datetime as dt
 
 
 def scrape():
@@ -51,6 +51,7 @@ def scrape():
 
     imgtag = soup.find(attrs={'class':'headerimage fade-in'})
     featured_image_url = imgtag['src']
+    featured_image_url = f"https://spaceimages-mars.com/{featured_image_url}"
 
     mars_data["space_img"] = featured_image_url
 
@@ -92,7 +93,8 @@ def scrape():
         hemis = {}
         
         browser.find_by_text(m).first.click()
-        visit = browser.links.find_by_partial_href(".tif").first
+        visit = browser.links.find_by_partial_href("full.jpg").first
+
         hemis["tif_url"] = visit["href"]
         hemis["title"] = browser.find_by_css("h2.title").text
         
@@ -104,4 +106,7 @@ def scrape():
     browser.quit()
 
     mars_data["hemi_pics"] = hemis_imgs
+    
+    timestamp = dt.datetime.now()
+    mars_data["last_modified"] = timestamp
     return mars_data
